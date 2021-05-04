@@ -143,12 +143,12 @@ module.exports.deleteRemovePost = async (req,res) => {
                 res.status(200).json({post})
         }
         else {
-            res.status(400).json({errors : 'Thông báo không tồn tại'})
+            res.status(400).json({errors : 'Bài đăng không tồn tại'})
         }
     } catch (error) {
         console.log(error)
         if(error.message.includes('Cast to ObjectId failed'))
-            res.status(400).json({errors : 'Mã thông báo không hợp lệ'})
+            res.status(400).json({errors : 'Mã bài đăng không hợp lệ'})
         else
             res.status(400).json({errors : error.message})
     }
