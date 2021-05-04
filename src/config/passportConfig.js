@@ -1,3 +1,4 @@
+require('dotenv').config()
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User.model');
@@ -12,10 +13,9 @@ const passportConfig = () => {
     passport.use(
         new GoogleStrategy(
             {
-                clientID:
-                    '713987113089-2s1a0a5c6f4icpeg98j8aoom6fr0m9fp.apps.googleusercontent.com',
-                clientSecret: 'VPqJCjG1-ZN9koxXaPT8WYbA',
-                callbackURL: 'http://localhost:8080/auth/google/callback',
+                clientID: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                callbackURL: 'https://university-social-media.herokuapp.com/auth/google/callback',
             },
             async function (accessToken, refreshToken, profile, cb) {
                 try {
