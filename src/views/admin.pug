@@ -1,0 +1,94 @@
+extends container.pug
+block title 
+    title Admin 
+block body
+    .admin-page
+        .admin-feature
+            h2.admin-feature__title Danh sách tài khoản
+            .admin-feature__actions
+                .admin-feature__filter 
+                    | Filter by : 
+                    select.form-select.form-select-lg.admin-feature__select(aria-label='Default select example')
+                        option(selected value='all') Tất cả
+                        if categories
+                            each category in categories
+                                option(value= category)= category
+                button.btn.btn-info.admin-feature__btn(type='button',data-bs-toggle="modal" data-bs-target="#modalCreateAccount") Thêm tài khoản
+        .admin-accounts
+            table.table.admin-table   
+                thead
+                    tr
+                        th.admin-table__header(scope='col') Username
+                        th.admin-table__header(scope='col') Display name
+                        th.admin-table__header(scope='col') Categories
+                        th.admin-table__header(scope='col') Actions
+                tbody.admin-table__body
+                    if users.length
+                        each user in users 
+                            tr(id= user._id)
+                                td
+                                    .admin-table__text= user.username 
+                                td
+                                    .admin-table__text= user.display_name
+                                td
+                                    .admin-table__text= user.categories
+                                td
+                                    .admin-table__text 
+                                    i.fas.fa-edit.admin-table__icon-edit
+                                    i.fas.fa-trash-alt.admin-table__icon-delete
+            .admin-table__empty-message= !users.length ? 'Chưa có tài khoản nào ' : ''
+        .admin-pagination 
+            nav
+                ul.pagination.justify-content-center.pagination-lg
+                    if totalPages 
+                        li.page-item.admin-pagination__page-item.disabled(data-page='previous')
+                            p.page-link Previous
+                        - for (let i=1;i<=totalPages;i++)
+                            li.page-item.admin-pagination__page-item(class= i === 1 ? 'active' : '',data-page=i)
+                                p.page-link=i
+                        li.page-item.admin-pagination__page-item(data-page='next',class= totalPages === 1 ? 'disabled' : '')
+                            p.page-link Next
+        .modal.fade#modalCreateAccount(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Thêm tài khoản
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.admin-create-user__form(autocomplete='off', action='#')
+                            .admin-form__credentials
+                                .admin-form__credentials-header
+                                    h3.admin-form__credentials-title Thông tin tài khoản
+                                .admin-form__credentials-group 
+                                    label.admin-form__credentials-label(for='displayName') Display name
+                                    input#displayName.admin-form__credentials-input(type='text', name='display_name',placeholder="Ex: John Doe")
+                                    .admin-form__error.admin-form__error--display_name   
+                                .admin-form__credentials-group 
+                                    label.admin-form__credentials-label(for='username') Username
+                                    input#username.admin-form__credentials-input(type='text', name='username',placeholder="Ex: john_doe")
+                                    .admin-form__error.admin-form__error--username 
+                                .admin-form__credentials-group 
+                                    label.admin-form__credentials-label(for='password') Password
+                                    input#password.admin-form__credentials-input(type='text', name='password',placeholder="Ex:**************")
+                                    .admin-form__error.admin-form__error--password 
+                                .admin-form__credentials-footer
+                                    button.admin-form__btn-next(type='button') Next
+                                        i.fas.fa-long-arrow-alt-right.admin-form__btn-next-icon
+                            .admin-form__authorize
+                                .admin-form__authorize-header
+                                    button.admin-form__authorize-back-btn(type='button')
+                                        i.fas.fa-arrow-left.admin-form__authorize-icon
+                                    h3.admin-form__authorize-title Phân quyền tài khoản
+                                .admin-form__error.admin-form__error--categories 
+                                if categories
+                                    each category in categories 
+                                        .admin-form__authorize-group
+                                            input.admin-form__authorize-input(type='checkbox',value= category,id= category,name='categories')
+                                            label.admin-form__authorize-label(for= category)= category
+                                .admin-form__authorize-footer
+                                    button.admin-form__btn-submit(type='submit') Create
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+                            
+

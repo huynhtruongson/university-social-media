@@ -1,0 +1,33 @@
+extends container.pug
+block title 
+    title Notification 
+block body
+    .notification-page 
+        .notification-feature(data-category= category ? category : 'all')
+            h2.notification-feature__title= category ? category : 'Danh sách thông báo'
+            if categories 
+                .notification-feature__filter 
+                    | Filter by : 
+                    select.form-select.form-select-lg.notification-feature__select(aria-label='Default select example')
+                        option(selected value='all') Tất cả
+                        each category in categories
+                            option(value= category)= category
+        .notification-notifications
+            if notifs.length 
+                each notif in notifs 
+                    .notification-notif__item
+                        a.notification-notif__title(href=`notification/${notif._id}`)= notif.title
+                        .notification-notif__subtitle= `[${notif.category}] - ${notif.createdAt}`
+            else 
+                .notification__empty-message Chưa có tài khoản nào !
+        .notification-pagination 
+            nav
+                ul.pagination.justify-content-center.pagination-lg
+                    if totalPages 
+                        li.page-item.notification-pagination__page-item.disabled(data-page='previous')
+                            p.page-link Previous
+                        - for (let i=1;i<=totalPages;i++)
+                            li.page-item.notification-pagination__page-item(class= i === 1 ? 'active' : '',data-page=i)
+                                p.page-link=i
+                        li.page-item.notification-pagination__page-item(data-page='next',class= totalPages === 1 ? 'disabled' : '')
+                            p.page-link Next

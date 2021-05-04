@@ -1,0 +1,122 @@
+extends container.pug
+block append link
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/gh/taras-d/images-grid/src/images-grid.min.css')
+block title 
+    title Home
+block body
+    .home-page 
+        .profile-content
+            .profile-post
+                if user._id+'' === currentUser._id+''
+                    .profile-post__status-bar
+                        .profile-post__writing-btn
+                            img.profile-post__avatar(src=user.avatar ? `https://res.cloudinary.com/sonhn/image/upload/${user.avatar}` : "/images/user-avatar.png", alt="")
+                            button.profile-post__input(data-bs-toggle="modal" data-bs-target="#modalCreatePost") What's your problem ? 
+                        .profile-post__options 
+                            button.profile-post__option-img-btn
+                                i.fas.fa-images.profile-post__img-icon
+                                | Photo
+                            button.profile-post__option-video-btn
+                                i.fas.fa-video.profile-post__camera-icon
+                                | Video
+                .profile-post__status-list
+                .profile-post__loading
+                    .spinner-border.text-info(role='status')
+                        span.visually-hidden Loading... 
+            .home-notifications
+                .home-notif__header
+                    span THÔNG BÁO MỚI 
+                    a(href="/notification") Xem tất cả
+                .home-notif__list 
+                    if notifs.length
+                        each notif in notifs 
+                            a.home-notif__item(href=`notification/${notif._id}`)
+                                .home-notif__title= notif.title
+                                .home-notif__subtitle= `[${notif.category}] - ${notif.createdAt}`
+        .modal.fade#modalCreatePost(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Create Post
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.profile-create-post__form(autocomplete='off')
+                            .profile-form__post-error.profile-form__post-error--create
+                            input.profile-form__input-status(type='file',name='status_files',multiple)
+                            .profile-form__group 
+                                textarea.profile-form__input(name="status", rows="4",placeholder="What's your problem ?")
+                            .profile-form__status-preview
+                                button.profile-form__clear-preview-btn.profile-form__clear-status_files-btn(type='button')
+                                    i.fas.fa-times.profile-form__clear-preview-icon
+                                .profile-form__status-preview-list.profile-form__status_files-preview-list
+                            .profile-form__feature-options
+                                span Add to Your Post
+                                .profile-form__options
+                                    button.profile-form__option-btn.profile-form__option-img-btn--create(type='button')
+                                        i.fas.fa-images.profile-form__option-img-icon
+                                    button.profile-form__option-btn.profile-form__option-video-btn--create(type='button')
+                                        i.fas.fa-video.profile-form__option-camera-icon
+                            .profile-form__footer
+                                button.profile-form__btn(type='submit') Post
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalEditPost(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Edit Post
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.profile-edit-post__form(autocomplete='off')
+                            .profile-form__post-error.profile-form__post-error--edit
+                            input.profile-form__input-status(type='file',name='status_files_edit',multiple)
+                            .profile-form__group 
+                                textarea.profile-form__input(name="status_edit", rows="4",placeholder="What's your problem ?")
+                            .profile-form__status-preview
+                                button.profile-form__clear-preview-btn.profile-form__clear-status_files_edit-btn(type='button')
+                                    i.fas.fa-times.profile-form__clear-preview-icon
+                                .profile-form__status-preview-list.profile-form__status_files_edit-preview-list
+                            .profile-form__feature-options
+                                span Add to Your Post
+                                .profile-form__options
+                                    button.profile-form__option-btn.profile-form__option-img-btn--edit(type='button')
+                                        i.fas.fa-images.profile-form__option-img-icon
+                                    button.profile-form__option-btn.profile-form__option-video-btn--edit(type='button')
+                                        i.fas.fa-video.profile-form__option-camera-icon
+                            .profile-form__footer
+                                button.profile-form__btn(type='submit') Update
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalConfirmDeletePost(tabindex='-1')
+            .modal-dialog.modal-dialog-centered 
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-danger Delete Post !
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        h4 Are you sure to delete this post !
+                    .modal-footer
+                        button.btn.btn-secondary.btn-lg(type='button', data-bs-dismiss='modal') Close
+                        button.btn.btn-danger.btn-lg.profile-post__confirm-delete-btn(type='button') Delete
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalConfirmDeleteComment(tabindex='-1')
+            .modal-dialog.modal-dialog-centered 
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-danger Delete Comment !
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        h4 Are you sure to delete this comment !
+                    .modal-footer
+                        button.btn.btn-secondary.btn-lg(type='button', data-bs-dismiss='modal') Close
+                        button.btn.btn-danger.btn-lg.profile-comment__confirm-delete-btn(type='button') Delete
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+block prepend javascript 
+    script(src='https://cdn.jsdelivr.net/gh/taras-d/images-grid/src/images-grid.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js', integrity='sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==', crossorigin='anonymous')

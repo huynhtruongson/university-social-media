@@ -1,0 +1,125 @@
+extends container.pug
+block title 
+    title Department 
+block body
+    .department-page 
+        .department-feature
+            h2.department-feature__title Danh sách thông báo
+            .department-feature__actions
+                .department-feature__filter 
+                    | Filter by : 
+                    select.form-select.form-select-lg.department-feature__select(aria-label='Default select example')
+                        option(selected value='all') Tất cả
+                        if categories
+                            each category in categories
+                                option(value= category)= category
+                button.btn.btn-info.department-feature__btn(type='button',data-bs-toggle="modal" data-bs-target="#modalCreateNotification") Thêm thông báo
+        .department-notifications
+            if notifs.length 
+                each notif in notifs 
+                    .department-notif__item(data-id= notif._id,data-name=notif.title)
+                        .department-notif__display 
+                            a(href=`notification/${notif._id}`).department-notif__title= notif.title
+                            .department-notif__subtitle= `[${notif.category}] - ${notif.createdAt}`
+                        .department-notif__actions 
+                            button.department-notif__actions-btn.department-notif__btn-edit
+                                i.fas.fa-edit.department-notif__icon-edit
+                            button.department-notif__actions-btn.department-notif__btn-delete
+                                i.fas.fa-trash-alt.department-notif__icon-delete
+            else 
+                .department__empty-message Chưa có tài khoản nào !
+        .department-pagination 
+            nav
+                ul.pagination.justify-content-center.pagination-lg
+                    if totalPages 
+                        li.page-item.department-pagination__page-item.disabled(data-page='previous')
+                            p.page-link Previous
+                        - for (let i=1;i<=totalPages;i++)
+                            li.page-item.department-pagination__page-item(class= i === 1 ? 'active' : '',data-page=i)
+                                p.page-link=i
+                        li.page-item.department-pagination__page-item(data-page='next',class= totalPages === 1 ? 'disabled' : '')
+                            p.page-link Next
+        .modal.fade#modalCreateNotification(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+                .modal-dialog.modal-lg
+                    .modal-content
+                        .modal-header
+                            h2.modal-title.text-info Thêm thông báo
+                            button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                        .modal-body
+                            form.department-create-notif__form(autocomplete='off')
+                                .department-form__group 
+                                    label.department-form__label(for='title') Tiêu đề
+                                    input#title.department-form__input(type='text', name='title',placeholder="Ex: Thông Báo ....")
+                                    .department-form__error.department-form__error--title   
+                                .department-form__group 
+                                    label.department-form__label(for='category') Chuyên mục
+                                    select#category.form-select.form-select-lg.department-form__select.department-form__input(aria-label='Default select example',name='category')
+                                        option(selected,value='') Chọn chuyên mục
+                                        if categories
+                                        each category in categories
+                                            option(value= category)= category
+                                    .department-form__error.department-form__error--category
+                                .department-form__group 
+                                    label.department-form__label(for='content') Nội dung
+                                    textarea#content.department-form__input(name='content',placeholder="Ex: Nội dung....",rows="8")
+                                    .department-form__error.department-form__error--content 
+                                .department-form__group 
+                                    label.department-form__label(for='files') Tệp đính kèm
+                                    button.department-form__file-btn.department-form__file-btn--create(type='button') Choose file
+                                    input#files.department-form__input.department-form__input--file(type='file', name='files',multiple)
+                                    .department-form__files-list 
+                                .department-form__footer
+                                    button.department-form__btn(type='submit') Create
+                        .modal-loading 
+                            .spinner-border.text-info(role='status')
+                                span.visually-hidden Loading...
+        .modal.fade#modalConfirmDeleteNoif(tabindex='-1')
+            .modal-dialog.modal-dialog-centered 
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-danger Xóa thông báo !
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        h4 Are you sure to delete this notification:
+                        p.department-modal__notif-name
+                    .modal-footer
+                        button.btn.btn-secondary.btn-lg(type='button', data-bs-dismiss='modal') Close
+                        button.btn.btn-danger.btn-lg.department-modal__confirm-delete-btn(type='button') Delete
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+
+        .modal.fade#modalEditNotification(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+                .modal-dialog.modal-lg
+                    .modal-content
+                        .modal-header
+                            h2.modal-title.text-info Cập nhật thông báo
+                            button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                        .modal-body
+                            form.department-edit-notif__form(autocomplete='off',data-id='some id')
+                                .department-form__group 
+                                    label.department-form__label(for='title-edit') Tiêu đề
+                                    input#title-edit.department-form__input(type='text', name='title-edit',placeholder="Ex: Thông Báo ....")
+                                    .department-form__error.department-form__error--title-edit   
+                                .department-form__group 
+                                    label.department-form__label(for='category-edit') Chuyên mục
+                                    select#category-edit.form-select.form-select-lg.department-form__select-edit.department-form__input(aria-label='Default select example',name='category-edit')
+                                        option(selected,value='') Chọn chuyên mục
+                                        if categories
+                                        each category in categories
+                                            option(value= category)= category
+                                    .department-form__error.department-form__error--category-edit
+                                .department-form__group 
+                                    label.department-form__label(for='content-edit') Nội dung
+                                    textarea#content-edit.department-form__input(name='content-edit',placeholder="Ex: Nội dung....",rows="8")
+                                    .department-form__error.department-form__error--content-edit 
+                                .department-form__group 
+                                    label.department-form__label(for='files-edit') Tệp đính kèm
+                                    button.department-form__file-btn.department-form__file-btn--edit(type='button') Choose file
+                                    input#files-edit.department-form__input.department-form__input--file(type='file', name='files-edit',multiple)
+                                    .department-form__files-edit-list 
+                                .department-form__footer
+                                    button.department-form__btn(type='submit') Update
+                        .modal-loading 
+                            .spinner-border.text-info(role='status')
+                                span.visually-hidden Loading... 

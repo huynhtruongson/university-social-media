@@ -1,0 +1,223 @@
+extends container.pug
+block append link
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/gh/taras-d/images-grid/src/images-grid.min.css')
+block title 
+    title Profile
+block body
+    .profile-page(data-id=user._id)
+        .profile-display 
+            .profile-display__background
+                .profile-display__avatar
+                    img.profile-display__img(src=user.avatar ? `https://res.cloudinary.com/sonhn/image/upload/${user.avatar}` : "/images/user-avatar.png", alt="")
+                    if user._id+'' === currentUser._id+''
+                        button.profile-info__btn-camera(type='button',data-bs-toggle="modal" data-bs-target="#modalUpdateAvatar")
+                            i.fas.fa-camera.profile-display__icon
+            .profile-dislay__name= user.display_name
+        .profile-content
+            .profile-post
+                if user._id+'' === currentUser._id+''
+                    .profile-post__status-bar
+                        .profile-post__writing-btn
+                            img.profile-post__avatar(src=user.avatar ? `https://res.cloudinary.com/sonhn/image/upload/${user.avatar}` : "/images/user-avatar.png", alt="")
+                            button.profile-post__input(data-bs-toggle="modal" data-bs-target="#modalCreatePost") What's your problem ? 
+                        .profile-post__options 
+                            button.profile-post__option-img-btn
+                                i.fas.fa-images.profile-post__img-icon
+                                | Photo
+                            button.profile-post__option-video-btn
+                                i.fas.fa-video.profile-post__camera-icon
+                                | Video
+                .profile-post__status-list
+                .profile-post__loading
+                    .spinner-border.text-info(role='status')
+                        span.visually-hidden Loading...  
+            .profile-info
+                .profile-info__title Thông tin tài khoản
+                    if currentUser._id+'' === user._id+'' 
+                        button.profile-info__btn-edit
+                            i.fas.fa-edit.profile-info__icon-edit
+                ul.profile-info__list
+                    li.profile-info__item.profile-info__name
+                            | Tên : 
+                            span= user.display_name ? user.display_name : 'Chưa có'
+                    li.profile-info__item.profile-info__role
+                        | Chức vụ : 
+                        span= user.role === 0 ? 'Sinh viên' : user.role === 1 ? 'Phòng/Khoa' : 'Quản trị viên'
+                    li.profile-info__item.profile-info__faculty 
+                        | Khoa : 
+                        span= user.faculty ? user.faculty : 'Chưa có'
+                    li.profile-info__item.profile-info__class
+                        | Lớp : 
+                        span= user.class ? user.class : 'Chưa có'
+                    li.profile-info__item.profile-info__email
+                        | Email : 
+                        span= user.email ? user.email : 'Chưa có'
+                if currentUser._id+'' === user._id+''
+                    if user.role >= 1
+                        button.profile-info__btn-change-pwd(data-bs-toggle="modal" data-bs-target="#modalUpdatePassword")
+                            .profile-info__change-pwd-title Đổi mật khẩu
+                            i.fas.fa-key.profile-info__icon-change-pwd
+                    button.profile-info__btn-logout
+                        a(href='/auth/logout').profile-info__link Đăng xuất
+                        i.fas.fa-sign-out-alt.profile-info__icon-logout
+
+        .modal.fade#modalUpdateProfile(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Cập nhật thông tin
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.profile-update-info__form(autocomplete='off')
+                            .profile-form__group 
+                                label.profile-form__label(for='display_name') Tên hiển thị
+                                input#display_name.profile-form__input(type='text', name='display_name',placeholder="Ex: Nguyễn Văn A")
+                                .profile-form__error.profile-form__error--display_name   
+                            .profile-form__group 
+                                label.profile-form__label(for='faculty') Khoa
+                                input#faculty.profile-form__input(type='text', name='faculty',placeholder="Ex: Công nghệ thông tin")
+                                .profile-form__error.profile-form__error--faculty 
+                            .profile-form__group 
+                                label.profile-form__label(for='class') Lớp
+                                input#class.profile-form__input(type='text', name='class',placeholder="Ex: 17050202")
+                                .profile-form__error.profile-form__error--class
+                            .profile-form__footer
+                                button.profile-form__btn(type='submit') Update
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+
+                        
+        .modal.fade#modalUpdateAvatar(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog.modal-dialog-centered
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Cập nhật ảnh đại diện
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.profile-avatar__form
+                            input.profile-avatar__input(type="file",accept="image/*") 
+                        button.profile-avatar__btn-choose-file + Upload Photo
+                        .profile-avatar__error
+                        img.profile-avatar__preview(src='#', alt="")
+                        .profile-form__footer
+                            button.profile-form__btn.profile-avatar__btn-update Update
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalUpdatePassword(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Cập nhật mật khẩu
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.profile-update-password__form(autocomplete='off')
+                            .profile-form__group 
+                                label.profile-form__label(for='password') Mật khẩu
+                                input#password.profile-form__input(type='password', name='password',placeholder="Ex: **************")
+                                .profile-form__error.profile-form__error--password   
+                            .profile-form__group 
+                                label.profile-form__label(for='newPassword') Mật khẩu mới
+                                input#newPassword.profile-form__input(type='password', name='newPassword',placeholder="Ex: **************")
+                                .profile-form__error.profile-form__error--newPassword 
+                            .profile-form__group 
+                                label.profile-form__label(for='reNewPassword') Nhập lại mật khẩu mới
+                                input#reNewPassword.profile-form__input(type='password', name='reNewPassword',placeholder="Ex: **************")
+                                .profile-form__error.profile-form__error--reNewPassword
+                            .profile-form__footer
+                                button.profile-form__btn(type='submit') Update
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalCreatePost(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Create Post
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.profile-create-post__form(autocomplete='off')
+                            .profile-form__post-error.profile-form__post-error--create
+                            input.profile-form__input-status(type='file',name='status_files',multiple)
+                            .profile-form__group 
+                                textarea.profile-form__input(name="status", rows="4",placeholder="What's your problem ?")
+                            .profile-form__status-preview
+                                button.profile-form__clear-preview-btn.profile-form__clear-status_files-btn(type='button')
+                                    i.fas.fa-times.profile-form__clear-preview-icon
+                                .profile-form__status-preview-list.profile-form__status_files-preview-list
+                            .profile-form__feature-options
+                                span Add to Your Post
+                                .profile-form__options
+                                    button.profile-form__option-btn.profile-form__option-img-btn--create(type='button')
+                                        i.fas.fa-images.profile-form__option-img-icon
+                                    button.profile-form__option-btn.profile-form__option-video-btn--create(type='button')
+                                        i.fas.fa-video.profile-form__option-camera-icon
+                            .profile-form__footer
+                                button.profile-form__btn(type='submit') Post
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalEditPost(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-info Edit Post
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        form.profile-edit-post__form(autocomplete='off')
+                            .profile-form__post-error.profile-form__post-error--edit
+                            input.profile-form__input-status(type='file',name='status_files_edit',multiple)
+                            .profile-form__group 
+                                textarea.profile-form__input(name="status_edit", rows="4",placeholder="What's your problem ?")
+                            .profile-form__status-preview
+                                button.profile-form__clear-preview-btn.profile-form__clear-status_files_edit-btn(type='button')
+                                    i.fas.fa-times.profile-form__clear-preview-icon
+                                .profile-form__status-preview-list.profile-form__status_files_edit-preview-list
+                            .profile-form__feature-options
+                                span Add to Your Post
+                                .profile-form__options
+                                    button.profile-form__option-btn.profile-form__option-img-btn--edit(type='button')
+                                        i.fas.fa-images.profile-form__option-img-icon
+                                    button.profile-form__option-btn.profile-form__option-video-btn--edit(type='button')
+                                        i.fas.fa-video.profile-form__option-camera-icon
+                            .profile-form__footer
+                                button.profile-form__btn(type='submit') Update
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalConfirmDeletePost(tabindex='-1')
+            .modal-dialog.modal-dialog-centered 
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-danger Delete Post !
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        h4 Are you sure to delete this post !
+                    .modal-footer
+                        button.btn.btn-secondary.btn-lg(type='button', data-bs-dismiss='modal') Close
+                        button.btn.btn-danger.btn-lg.profile-post__confirm-delete-btn(type='button') Delete
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+        .modal.fade#modalConfirmDeleteComment(tabindex='-1')
+            .modal-dialog.modal-dialog-centered 
+                .modal-content
+                    .modal-header
+                        h2.modal-title.text-danger Delete Comment !
+                        button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                    .modal-body
+                        h4 Are you sure to delete this comment !
+                    .modal-footer
+                        button.btn.btn-secondary.btn-lg(type='button', data-bs-dismiss='modal') Close
+                        button.btn.btn-danger.btn-lg.profile-comment__confirm-delete-btn(type='button') Delete
+                    .modal-loading 
+                        .spinner-border.text-info(role='status')
+                            span.visually-hidden Loading...
+block prepend javascript 
+    script(src='https://cdn.jsdelivr.net/gh/taras-d/images-grid/src/images-grid.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js', integrity='sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==', crossorigin='anonymous')
+
+
+                        
+            

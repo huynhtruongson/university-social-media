@@ -1,0 +1,17 @@
+extends container.pug
+block title 
+    title Notification 
+block body
+    .detail-notif-page
+        if notif 
+            .detail-notif__title= notif.title
+            .detail-notif__subtitle= `${notif.category}/Ngày đăng ${notif.createdAt}`
+            .detail-notif__content= notif.content
+            if notif.files 
+                .detail-notif__files 
+                    | Danh sách file đính kèm :
+                    each file,index in notif.files 
+                        a.detail-notif__file-item(href=`https://res.cloudinary.com/sonhn/raw/upload/${file.public_id}`)= `${index+1}.${file.title}`
+                    
+        else 
+            .detail-notif__title Thông báo không tồn tại
