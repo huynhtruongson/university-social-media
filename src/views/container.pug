@@ -24,56 +24,57 @@ html(lang="en")
                     img.header-user__avatar(src=currentUser.avatar ? `https://res.cloudinary.com/sonhn/image/upload/${currentUser.avatar}` : "/images/user-avatar.png", alt="")
                     h4.header-user__name= currentUser ? currentUser.display_name : ''
         .container-content.container
-            .navigation-bar
-                ul.navbar-list 
-                    li.navbar-item 
-                        .navbar-item__row.navbar-item__user
-                            a.navbar-item__link(href=`/profile/${currentUser._id}`) 
-                                img.navbar-item__avatar(src=currentUser.avatar ? `https://res.cloudinary.com/sonhn/image/upload/${currentUser.avatar}` : "/images/user-avatar.png", alt="")
-                                h4.navbar-item__name= currentUser ? currentUser.display_name : ''
-                            i.fas.fa-chevron-right.navbar-item__icon
-                    if currentUser.role === 2
+            .navigation-bar-container
+                .navigation-bar
+                    ul.navbar-list 
+                        li.navbar-item 
+                            .navbar-item__row.navbar-item__user
+                                a.navbar-item__link(href=`/profile/${currentUser._id}`) 
+                                    img.navbar-item__avatar(src=currentUser.avatar ? `https://res.cloudinary.com/sonhn/image/upload/${currentUser.avatar}` : "/images/user-avatar.png", alt="")
+                                    h4.navbar-item__name= currentUser ? currentUser.display_name : ''
+                                i.fas.fa-chevron-right.navbar-item__icon
+                        if currentUser.role === 2
+                            li.navbar-item 
+                                .navbar-item__row
+                                    a.navbar-item__link-logout(href='/admin') 
+                                        h4.navbar-item__title Quản lý tài khoản
+                                        i.fas.fa-chevron-right.navbar-item__icon
+                        if currentUser.role === 1
+                            li.navbar-item 
+                                .navbar-item__row
+                                    a.navbar-item__link-logout(href='/department') 
+                                        h4.navbar-item__title Quản lý thông báo
+                                        i.fas.fa-chevron-right.navbar-item__icon
+                        li.navbar-item 
+                                .navbar-item__row
+                                    a.navbar-item__link-logout(href='/notification') 
+                                        h4.navbar-item__title Tất cả thông báo
+                                        i.fas.fa-chevron-right.navbar-item__icon
+                        li.navbar-item 
+                            .navbar-item__row.navbar-item__dropdown(data-position='department') 
+                                h4.navbar-item__title Thông báo từ phòng ban 
+                                i.fas.fa-chevron-right.navbar-item__icon
+                            .navbar-item__children
+                                ul.navbar-sub-list 
+                                    if categoryList.department
+                                        each category in categoryList.department
+                                            li.navbar-sub-item
+                                                a.navbar-sub-item__link(href=`/notification?category=${category}`)=category
+                        li.navbar-item 
+                            .navbar-item__row.navbar-item__dropdown(data-position='falcuty')
+                                h4.navbar-item__title Thông báo từ khoa
+                                i.fas.fa-chevron-right.navbar-item__icon
+                            .navbar-item__children
+                                ul.navbar-sub-list 
+                                    if categoryList.faculty
+                                        each category in categoryList.faculty
+                                            li.navbar-sub-item
+                                                a.navbar-sub-item__link(href=`/notification?category=${category}`)=category
                         li.navbar-item 
                             .navbar-item__row
-                                a.navbar-item__link-logout(href='/admin') 
-                                    h4.navbar-item__title Quản lý tài khoản
-                                    i.fas.fa-chevron-right.navbar-item__icon
-                    if currentUser.role === 1
-                        li.navbar-item 
-                            .navbar-item__row
-                                a.navbar-item__link-logout(href='/department') 
-                                    h4.navbar-item__title Quản lý thông báo
-                                    i.fas.fa-chevron-right.navbar-item__icon
-                    li.navbar-item 
-                            .navbar-item__row
-                                a.navbar-item__link-logout(href='/notification') 
-                                    h4.navbar-item__title Tất cả thông báo
-                                    i.fas.fa-chevron-right.navbar-item__icon
-                    li.navbar-item 
-                        .navbar-item__row.navbar-item__dropdown(data-position='department') 
-                            h4.navbar-item__title Thông báo từ phòng ban 
-                            i.fas.fa-chevron-right.navbar-item__icon
-                        .navbar-item__children
-                            ul.navbar-sub-list 
-                                if categoryList.department
-                                    each category in categoryList.department
-                                        li.navbar-sub-item
-                                            a.navbar-sub-item__link(href=`/notification?category=${category}`)=category
-                    li.navbar-item 
-                        .navbar-item__row.navbar-item__dropdown(data-position='falcuty')
-                            h4.navbar-item__title Thông báo từ khoa
-                            i.fas.fa-chevron-right.navbar-item__icon
-                        .navbar-item__children
-                            ul.navbar-sub-list 
-                                if categoryList.faculty
-                                    each category in categoryList.faculty
-                                        li.navbar-sub-item
-                                            a.navbar-sub-item__link(href=`/notification?category=${category}`)=category
-                    li.navbar-item 
-                        .navbar-item__row
-                            a.navbar-item__link-logout(href='/auth/logout') 
-                                h4.navbar-item__title Đăng xuất
-                                i.fas.fa-sign-out-alt.navbar-item__icon
+                                a.navbar-item__link-logout(href='/auth/logout') 
+                                    h4.navbar-item__title Đăng xuất
+                                    i.fas.fa-sign-out-alt.navbar-item__icon
             .navigation-bar__overlay
             .navigation-bar-tablet
                 button.btn-close.navigation-bar__btn-close(type="button")

@@ -660,7 +660,7 @@ $(document).ready(() => {
                 $('.notification-pagination ul.pagination').on('click', '.notification-pagination__page-item',notification_state.handlePageClick.bind(notification_state))
             }
             else {
-                $('.notification-notifications').append('<div class="notification__empty-message">Chưa có tài khoản nào !</div>')
+                $('.notification-notifications').append('<div class="notification__empty-message">Chưa có thông báo nào !</div>')
             }
         } catch (error) {
             console.log(error.response)

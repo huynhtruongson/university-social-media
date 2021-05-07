@@ -22,17 +22,18 @@ block body
                 .profile-post__status-list
                 .profile-post__loading
                     .spinner-border.text-info(role='status')
-                        span.visually-hidden Loading... 
-            .home-notifications
-                .home-notif__header
-                    span THÔNG BÁO MỚI 
-                    a(href="/notification") Xem tất cả
-                .home-notif__list 
-                    if notifs.length
-                        each notif in notifs 
-                            a.home-notif__item(href=`notification/${notif._id}`)
-                                .home-notif__title= notif.title
-                                .home-notif__subtitle= `[${notif.category}] - ${notif.createdAt}`
+                        span.visually-hidden Loading...
+            .home-notifications-container 
+                .home-notifications
+                    .home-notif__header
+                        span THÔNG BÁO MỚI 
+                        a(href="/notification") Xem tất cả
+                    .home-notif__list 
+                        if notifs.length
+                            each notif in notifs 
+                                a.home-notif__item(href=`notification/${notif._id}`)
+                                    .home-notif__title= notif.title
+                                    .home-notif__subtitle= `[${notif.category}] - ${notif.createdAt}`
         .modal.fade#modalCreatePost(tabindex='-1',data-bs-backdrop="static" data-bs-keyboard="false",aria-labelledby="staticBackdropLabel" aria-hidden="true")
             .modal-dialog
                 .modal-content

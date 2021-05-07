@@ -97,11 +97,15 @@ html {
 .header-menu__btn:hover {
     background-color: #cacaca;
 }
-.navigation-bar {
+.navigation-bar-container {
     width: 300px;
-    max-height: 620px;
     align-self: baseline;
     margin-right: 20px;
+}
+.navigation-bar {
+    position: fixed;
+    width: inherit;
+    max-height: 620px;
     border-radius: 8px;
     box-shadow: rgb(215 215 215 / 50%) 0px 4px 16px;
     overflow-y: auto;
@@ -1749,8 +1753,12 @@ html {
 
 }
 /* Home Page */
+.home-notifications-container {
+    width: 300px;
+}
 .home-notifications {
-    flex-basis: 300px;
+    width: inherit;
+    position: fixed;
     border-radius: 8px;
     box-shadow: rgb(215 215 215 / 50%) 0px 4px 16px;
     padding: 6px;
@@ -1852,7 +1860,7 @@ html {
 }
 /* Responsive */
 @media (max-width: 1199px) {
-    .home-notifications {
+    .home-notifications-container {
         display: none;
     }
     .profile-info {
@@ -1866,7 +1874,7 @@ html {
     }
 }
 @media (max-width:991px) {
-    .navigation-bar {
+    .navigation-bar-container {
         display: none;
     }
     .navigation-bar-tablet {
