@@ -1,6 +1,6 @@
 $(document).ready(() => {
     // Socket
-    const socket = io('https://rtc-video-call.herokuapp.com',{autoConnect : false})
+    const socket = io('https://university-social-media.herokuapp.com',{autoConnect : false})
     if($('.header-user').data('id'))
         socket.connect();
     if($('.header-user').data('role') === 0) {
