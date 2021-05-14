@@ -53,7 +53,7 @@ block body
                         | Email : 
                         span= user.email ? user.email : 'Chưa có'
                 if currentUser._id+'' === user._id+''
-                    if user.role >= 1
+                    if user.role === 1
                         button.profile-info__btn-change-pwd(data-bs-toggle="modal" data-bs-target="#modalUpdatePassword")
                             .profile-info__change-pwd-title Đổi mật khẩu
                             i.fas.fa-key.profile-info__icon-change-pwd

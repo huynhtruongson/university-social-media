@@ -2,6 +2,8 @@ const express = require('express')
 const cookie = require('cookie-parser')
 const session = require('express-session')
 const passport = require('passport');
+const favicon = require('serve-favicon')
+const path = require('path')
 const route = require('./src/routes')
 const mongoConnect = require('./src/config/dbConfig')
 const passportConfig = require('./src/config/passportConfig')
@@ -9,6 +11,7 @@ const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 app.use(express.static('./src/public'))
+app.use(favicon(path.join(__dirname,'src','public','images', 'favicon.ico')))
 app.set('view engine','pug')
 app.set('views','./src/views')
 app.set('socketio', io);
