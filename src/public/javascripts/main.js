@@ -1,7 +1,7 @@
 $(document).ready(() => {
     // Socket
-    const socket = io('https://university-social-media.herokuapp.com',{autoConnect : false})
-    if($('.header-user').data('id') && $('.header-user').data('role') === 0)
+    const socket = io('https://rtc-video-call.herokuapp.com',{autoConnect : false})
+    if($('.header-user').data('id'))
         socket.connect();
     if($('.header-user').data('role') === 0) {
         socket.emit('student-connect')
@@ -20,6 +20,17 @@ $(document).ready(() => {
         $('.toast-box').prepend($toast)
         setTimeout(() => $($toast).remove(),4400)
 
+    })
+    socket.on('user-comment',id => {
+        $(`.profile-post__status-item[data-id=${id}] .profile-post__comment-creating`).css('display','flex')
+    })
+    socket.on('user-leave-comment',id => {
+        $(`.profile-post__status-item[data-id=${id}] .profile-post__comment-creating`).css('display','none')
+    })
+    socket.on('user-submit-comment',({id,comment,amount}) => {
+        $(`.profile-post__status-item[data-id=${id}] .profile-post__count-item--comment`).text(`${amount} Comment`)
+        if(!$(`.profile-post__status-item[data-id=${id}] .profile-post__comment-list`).is(':empty'))
+            profile_state.handleCreateComment(id,comment)
     })
     // CONTAINER
     const container_state = {
@@ -802,7 +813,19 @@ $(document).ready(() => {
                             <div class="spinner-border text-info" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                        </div>                        
+                        </div>
+                        <div class ="profile-post__comment-creating">
+                            Someone is commenting
+                            <div class= "spinner-grow text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class= "spinner-grow text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class= "spinner-grow text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>                   
                         <div class="profile-post__comment-user">
                             <div class="profile-post__comment-avatar">
                                 <img class="profile-post__comment-avatar-img" src=${this.currentUser.avatar} alt="" />
@@ -837,6 +860,8 @@ $(document).ready(() => {
             $($post).on('click','.profile-post__action-comment',this.handleRenderComments.bind(this))
             $($post).on('click','.profile-post__action-like',this.handleLikeBtnClick.bind(this))
             $($post).on('submit','.profile-post__comment-form',this.handleSubmitFormComment.bind(this))
+            $($post).on('focus','.profile-post__comment-input',this.handleFocusCommentInput)
+            $($post).on('focusout','.profile-post__comment-input',this.handleFocusOutCommentInput)
             if(isCreate)
                 $('.profile-post__status-list').prepend($post)
             else
@@ -940,8 +965,10 @@ $(document).ready(() => {
                     return
                 const res = await axios.post(`/post/api/add-comment/${id}`,{comment})
                 if(res.status === 200) {
-                    const {comment} = res.data
+                    const {comment,amount} = res.data
                     this.handleCreateComment(id,comment)
+                    socket.emit('user-submit-comment',{id,comment,amount})
+                    $(`.profile-post__status-item[data-id=${id}] .profile-post__count-item--comment`).text(`${amount} Comment`)
                     $(`.profile-post__status-item[data-id=${id}] .profile-post__comment-input`).val('')
                 }
             } catch (error) {
@@ -1023,6 +1050,14 @@ $(document).ready(() => {
                     alert(errors)
                 }
             }
+        },
+        handleFocusCommentInput(e) {
+            const id = $(e.target).parents('.profile-post__status-item').data('id') // post id
+            socket.emit('user-comment',id)
+        },
+        handleFocusOutCommentInput(e) {
+            const id = $(e.target).parents('.profile-post__status-item').data('id') // post id
+            socket.emit('user-leave-comment',id)
         }  
     }
     // handle hide modal update avatar

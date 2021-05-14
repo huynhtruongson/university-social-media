@@ -30,6 +30,15 @@ io.on('connection',socket => {
     socket.on('student-connect',()=>{
         socket.join('students')
     })
+    socket.on('user-comment',(id) => {
+        socket.broadcast.emit('user-comment',id)
+    })
+    socket.on('user-leave-comment',(id) => {
+        socket.broadcast.emit('user-leave-comment',id)
+    })
+    socket.on('user-submit-comment',({id,comment,amount}) => {
+        socket.broadcast.emit('user-submit-comment',{id,comment,amount})
+    })
 })
 const PORT = process.env.PORT || 8080
 http.listen(PORT,()=> console.log(`App running at port ${PORT}`))

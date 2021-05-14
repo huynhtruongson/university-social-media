@@ -1752,6 +1752,18 @@ html {
     margin-top: 10px;
 
 }
+.profile-post__comment-creating {
+    margin-top: 6px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+}
+.profile-post__comment-creating .spinner-grow {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 6px;
+}
 /* Home Page */
 .home-notifications-container {
     width: 300px;

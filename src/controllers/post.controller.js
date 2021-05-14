@@ -172,7 +172,7 @@ module.exports.postAddComment = async (req,res) => {
             comments : {author,content:comment}
         }},{new : true})
         const postPopulated = await Post.populate(updatedPost, {path : 'comments.author',select : 'display_name avatar'})
-        res.status(200).json({comment : postPopulated.comments[postPopulated.comments.length - 1]})
+        res.status(200).json({comment : postPopulated.comments[postPopulated.comments.length - 1],amount : postPopulated.comments.length})
     } catch (error) {
         console.log(error)
         res.status(400).json({errors : error.message})
